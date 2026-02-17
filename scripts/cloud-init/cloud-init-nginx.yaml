@@ -1,0 +1,9 @@
+
+#cloud-config
+package_update: true
+packages:
+  - nginx
+runcmd:
+  - echo "<!DOCTYPE html><html><head><meta charset='utf-8'><title>OCI Baseline</title></head><body><h1>OCI IaC Baseline</h1><p>Deployed via cloud-init.</p></body></html>" > /var/www/html/index.html
+  - systemctl enable nginx
+  - systemctl restart nginx

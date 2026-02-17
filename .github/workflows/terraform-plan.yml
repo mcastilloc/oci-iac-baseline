@@ -1,0 +1,40 @@
+
+name: terraform-plan
+
+on:
+  pull_request:
+    paths:
+      - 'infra/**.tf'
+      - 'infra/**.tfvars*'
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+      - name: Terraform Init / Validate / Plan
+        working-directory: infra
+        run: |
+          terraform init
+          terraform fmt -check
+          terraform validate
+          terraform plan -out tfplan
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: infra/tfplan
+      - name: Comment plan summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.summary.addHeading('Terraform plan ready')
+            core.summary.addLink('Download plan artifact', '${{ steps.upload.outputs.artifact-url || '' }}')
+            await core.summary.write()

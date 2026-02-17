@@ -1,0 +1,20 @@
+
+#cloud-config
+package_update: true
+runcmd:
+  - useradd --no-create-home --shell /bin/false nodeusr || true
+  - cd /opt && curl -L -o node_exporter.tar.gz https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz || true
+  - tar -xzf node_exporter.tar.gz || true
+  - mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin/ || true
+  - rm -rf node_exporter* || true
+  - printf "[Unit]
+Description=Prometheus Node Exporter
+[Service]
+User=nodeusr
+ExecStart=/usr/local/bin/node_exporter
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/node_exporter.service
+  - systemctl daemon-reload
+  - systemctl enable node_exporter
+  - systemctl start node_exporter

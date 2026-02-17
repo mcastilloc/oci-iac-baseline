@@ -1,0 +1,13 @@
+
+# Rename to terraform.tfvars and fill in with your values. DO NOT COMMIT.
+region           = "sa-santiago-1"
+compartment_ocid = "ocid1.compartment.oc1..example"
+ssh_public_key   = "ssh-rsa AAAA... user@host"
+# cloud_init_file = "../scripts/cloud-init/cloud-init-node-exporter.yaml"
+
+project_tags = {
+  cost_center = "cloud-demo"
+  env         = "dev"
+  owner       = "marcelo.castillo"
+  project     = "oci-iac-baseline"
+}
